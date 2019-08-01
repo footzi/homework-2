@@ -4,6 +4,7 @@ import './Chat.css';
 
 export default class Chat extends Component {
   state = { messages: [], messageInput: '' };
+  messagesWrapper = React.createRef();
 
   changeInputMessage = e => {
     this.setState({
@@ -12,17 +13,15 @@ export default class Chat extends Component {
   };
 
   sendMessageOnEnter = e => {
-    if (!this.state.messageInput) {
-      return;
-    }
+    const { messages, messageInput } = this.state;
 
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && this.state.messageInput) {
       this.setState({
-        messages: [...this.state.messages, { text: this.state.messageInput }],
+        messages: [...messages, { text: messageInput }],
         messageInput: ''
       }, () => {
-        if (this.refs.messages) {
-          this.refs.messages.scrollIntoView(false);
+        if (this.messagesWrapper.current) {
+          this.messagesWrapper.current.scrollIntoView(false);
         }
       });
     }
@@ -32,7 +31,7 @@ export default class Chat extends Component {
     return (
       <div className="chat">
         <div className="message-list">
-          <div className="messages" ref={'messages'}>
+          <div className="messages" ref={this.messagesWrapper}>
             {this.state.messages.map((item, index) => (
               <Message key={index} text={item.text} />
             ))}

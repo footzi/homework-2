@@ -13,26 +13,31 @@ export default class Chat extends Component {
   };
 
   sendMessageOnEnter = e => {
-    const { messages, messageInput } = this.state;
+    const { messageInput } = this.state;
 
-    if (e.key === 'Enter' && this.state.messageInput) {
-      this.setState({
-        messages: [...messages, { text: messageInput }],
-        messageInput: ''
-      }, () => {
-        if (this.messagesWrapper.current) {
-          this.messagesWrapper.current.scrollIntoView(false);
+    if (e.key === 'Enter' && messageInput) {
+      this.setState(
+        prevState => ({
+          messages: [...prevState.messages, { text: prevState.messageInput }],
+          messageInput: ''
+        }),
+        () => {
+          if (this.messagesWrapper.current) {
+            this.messagesWrapper.current.scrollIntoView(false);
+          }
         }
-      });
+      );
     }
   };
 
   render() {
+    const { messages, messageInput } = this.state;
+
     return (
       <div className="chat">
         <div className="message-list">
           <div className="messages" ref={this.messagesWrapper}>
-            {this.state.messages.map((item, index) => (
+            {messages.map((item, index) => (
               <Message key={index} text={item.text} />
             ))}
           </div>
@@ -41,7 +46,7 @@ export default class Chat extends Component {
         <input
           type="text"
           className="input-message"
-          value={this.state.messageInput}
+          value={messageInput}
           onChange={this.changeInputMessage}
           onKeyPress={this.sendMessageOnEnter}
         />
